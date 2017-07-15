@@ -10,9 +10,16 @@ wd = glob.glob('*.*')
 File_List = []
 extensions = []
 thresh = 0
-length = 7
 
-print(wd)
+if '-l' in argv:
+    length = int(argv[argv.index('-l') + 1])
+else:
+    length = 7
+
+if '-t' in argv:
+    thresh = int(argv[argv.index('-t') + 1])
+else:
+    thresh = 0
 
 if '-x' in argv:
     for arg in argv[argv.index('-x')+1:]:
@@ -40,13 +47,9 @@ def randomHex():
     return randHex
 
 for f in File_List:
-    if len(f[:f.index('.')]) > thresh:
+    if len(f[:f.index('.')]) >= thresh:
         randHex = randomHex()
+        while Collision_Check(randHex):
+            randHex = randomHex()
         print('Changed: ' + f + ' to: ' + randHex + f[f.index('.'):])
-        if not Collision_Check(randHex):
-            os.rename(f, randHex + f[f.index('.'):])
-            pass
-        else:
-            while Collision_Check(randHex):
-                randHex = randomHex()
-            os.rename(f, randHex + f[f.index('.'):])
+        os.rename(f, randHex + f[f.index('.'):])
