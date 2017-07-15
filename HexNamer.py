@@ -1,36 +1,52 @@
+#!/usr/bin/python3
+
 import os
 import glob
 import random
 from sys import argv
 
-global File_List
-File_List_jpgs = glob.glob('*.jpg')
-File_List_pngs = glob.glob('*.png')
-File_List = File_List_jpgs + File_List_pngs
+global wd, length
+wd = glob.glob('*.*')
+File_List = []
+extensions = []
+thresh = 0
+length = 7
+
+print(wd)
+
+if '-x' in argv:
+    for arg in argv[argv.index('-x')+1:]:
+        if not arg[0] == '-':
+            extensions.append(arg)
+        else:
+            break
+    for f in wd:
+        for ext in extensions:
+            if f[-len(ext):] == ext and not f in File_List:
+                File_List.append(f)
+else:
+    File_List = wd
 
 def Collision_Check(hexString):
-    for file in File_List:
-        if file[:len(file)-4] == hexString:
+    for f in wd:
+        if f[:f.index('.')] == hexString:
             return True
     return False
 
-def Random_Hex():
-    randNum = random.randint(16**6, (16**8)-1)
-    randHex = str(hex(randNum))[2:]
-    if randNum < 16**7:
+def randomHex():
+    randHex = str(hex(random.randint(16**(length-2), (16**length)-1)))[2:]
+    if len(randHex) < length:
         randHex = '0' + randHex
-    if len(randHex) > 7:
-        randHex = randHex[:len(randHex)-1]
     return randHex
 
-for i, file in enumerate(File_List):
-    if len(file)-4 != 7:
-        randHex = Random_Hex()
-        #print('Changed: ' + file + ' to: ' + randHex + file[len(file)-4:])
+for f in File_List:
+    if len(f[:f.index('.')]) > thresh:
+        randHex = randomHex()
+        print('Changed: ' + f + ' to: ' + randHex + f[f.index('.'):])
         if not Collision_Check(randHex):
-            os.rename(File_List[i], randHex + file[len(file)-4:])
+            os.rename(f, randHex + f[f.index('.'):])
+            pass
         else:
-            #print('collision!')
             while Collision_Check(randHex):
-                randHex = Random_Hex()
-            os.rename(File_List[i], randHex + file[len(file)-4:])
+                randHex = randomHex()
+            os.rename(f, randHex + f[f.index('.'):])
