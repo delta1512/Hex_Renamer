@@ -1,15 +1,17 @@
 # Hex_Renamer
 
-Python script that renames files as a hex string based off of rules.
+Python script that renames files as a string of random hex values
 
- 
+## Options:
 
-Current function:
+> -l [length]
 
-  - Randomises the name of every file in the current directory.
+Change the length of the resulting string of hex to size *length*
 
-Usage:
+> -t [thresh]
 
-    python3.5 HexNamer.py
-    
-(Tested using python 3.5.2)
+Only consider files with length (excluding extension) of *thresh* and above
+
+> -x [extension1] [extension2] [extensionN]...
+
+Only consider files with the specified extensions
